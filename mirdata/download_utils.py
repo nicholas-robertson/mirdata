@@ -214,7 +214,7 @@ def extractall_unicode(zfile, out_dir):
         out_dir (str): Output folder
 
     """
-    for m in zfile.infolist():
+    for m in tqdm(iterable=zfile.infolist(), total=len(zfile.infolist())):
         data = zfile.read(m)  # extract zipped data into memory
 
         if m.filename.encode("cp437").decode() != m.filename.encode("utf8").decode():
@@ -269,7 +269,8 @@ def untar(tar_path, cleanup):
 
     """
     tfile = tarfile.open(tar_path, "r")
-    tfile.extractall(os.path.dirname(tar_path))
+    for member in tqdm(iterable=tfile.getmembers(), total=len(tfile.getmembers())):
+        tfile.extract(member=member)
     tfile.close()
     if cleanup:
         os.remove(tar_path)
